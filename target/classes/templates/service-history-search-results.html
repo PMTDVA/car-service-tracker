@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - Car Service System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Car Service Management</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cars">Cars</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/service-history">Service History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/service-history/search">Search</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Search Results</h1>
+            <a href="/service-history/search" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Search
+            </a>
+        </div>
+
+        <!-- Error Message -->
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Search by Registration Results -->
+        <div th:if="${searchType == 'registration' && car != null}">
+            <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle me-2"></i>
+                Showing service history for car with registration number: <strong th:text="${searchTerm}"></strong>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Car Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Registration:</strong> <span th:text="${car.registrationNumber}"></span></p>
+                            <p><strong>Make:</strong> <span th:text="${car.make}"></span></p>
+                            <p><strong>Model:</strong> <span th:text="${car.model}"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Year:</strong> <span th:text="${car.year}"></span></p>
+                            <p><strong>Color:</strong> <span th:text="${car.color ?: '—'}"></span></p>
+                            <p>
+                                <a th:href="@{/service-history/car/{id}(id=${car.id})}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-tools me-1"></i>View Full Service History
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Service Records</h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(records)}" class="text-center py-4">
+                        <p class="text-muted mb-0">No service records found for this vehicle.</p>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(records)}" class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Service Description</th>
+                                    <th>Mileage</th>
+                                    <th class="text-end">Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="record : ${records}">
+                                    <td th:text="${#temporals.format(record.date, 'MMM d, yyyy')}"></td>
+                                    <td th:text="${record.description}"></td>
+                                    <td th:text="${record.mileage + ' mi'}"></td>
+                                    <td class="text-end" th:text="${'$' + #numbers.formatDecimal(record.cost, 1, 2)}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search by Date Range Results -->
+        <div th:if="${searchType == 'dateRange'}">
+            <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle me-2"></i>
+                Showing service records from <strong th:text="${#temporals.format(startDate, 'MMM d, yyyy')}"></strong> to <strong th:text="${#temporals.format(endDate, 'MMM d, yyyy')}"></strong>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Service Records</h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(records)}" class="text-center py-4">
+                        <p class="text-muted mb-0">No service records found in the specified date range.</p>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(records)}" class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Car</th>
+                                    <th>Registration</th>
+                                    <th>Service Description</th>
+                                    <th class="text-end">Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="record : ${records}">
+                                    <td th:text="${#temporals.format(record.date, 'MMM d, yyyy')}"></td>
+                                    <td>
+                                        <span th:each="car : ${cars}" th:if="${car.id == record.carId}" 
+                                              th:text="${car.make + ' ' + car.model + ' (' + car.year + ')'}"></span>
+                                    </td>
+                                    <td>
+                                        <a th:each="car : ${cars}" th:if="${car.id == record.carId}" 
+                                           th:href="@{/service-history/car/{id}(id=${car.id})}" 
+                                           th:text="${car.registrationNumber}" class="text-decoration-none"></a>
+                                    </td>
+                                    <td th:text="${record.description}"></td>
+                                    <td class="text-end" th:text="${'$' + #numbers.formatDecimal(record.cost, 1, 2)}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
