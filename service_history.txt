@@ -1,1 +1,1 @@
-[{"id":"4313169e-051d-45c5-82d0-0645b5a5dd14","carId":"5ddde5a3-377a-46c2-b5e2-693032ccf25d","date":[2025,4,5],"description":"oil","cost":10000.0,"mileage":1000}]
+[]
