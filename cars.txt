@@ -1,1 +1,1 @@
-[]
+[{"id":"99e926f0-d0a8-4468-a36c-d89f7b5b4f13","userId":"bab69152-5cea-4cbf-b272-8c9e67406af5","registrationNumber":"1234","make":"Toyota","model":"Camry","year":"2024","color":"Silver","serviceRecords":[]}]

@@ -1,1 +1,1 @@
-[]
+[{"id":"199ac709-8e54-40d5-b7ad-f44314d9d3e5","carId":"99e926f0-d0a8-4468-a36c-d89f7b5b4f13","date":[2025,4,6],"description":"oi","cost":1000.0,"mileage":10}]

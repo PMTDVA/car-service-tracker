@@ -49,8 +49,6 @@ public class CarController {
         Car newCar = new Car();
         newCar.setUserId(userId);
         model.addAttribute("car", newCar); // For the form
-//        model.addAttribute("car", new Car()); // For the form
-//        model.addAttribute("car").setUserId(userId); // Set the user ID
         return "user-cars";
     }
 

@@ -1,11 +1,15 @@
 package com.carservice.model;
 
 import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class ServiceRecord {
     private String id;
     private String carId;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
+
     private String description;
     private double cost;
     private int mileage;
